@@ -32,20 +32,20 @@ public class DeobfuscatorVisitor extends AbstractVisitor {
 	}
 
 	public static void process(RootNode root, IRenameCondition renameCondition, IAliasProvider aliasProvider) {
-		boolean pkgUpdated = false;
-		for (PackageNode pkg : root.getPackages()) {
-			if (renameCondition.shouldRename(pkg)) {
-				String alias = aliasProvider.forPackage(pkg);
-				if (alias != null) {
-					pkg.rename(alias, false);
-					pkgUpdated = true;
-				}
-			}
-		}
-		if (pkgUpdated) {
-			root.runPackagesUpdate();
-		}
-
+		// mod:don't rename package
+		//		boolean pkgUpdated = false;
+		//		for (PackageNode pkg : root.getPackages()) {
+		//			if (renameCondition.shouldRename(pkg)) {
+		//				String alias = aliasProvider.forPackage(pkg);
+		//				if (alias != null) {
+		//					pkg.rename(alias, false);
+		//					pkgUpdated = true;
+		//				}
+		//			}
+		//		}
+		//		if (pkgUpdated) {
+		//			root.runPackagesUpdate();
+		//		}
 		for (ClassNode cls : root.getClasses()) {
 			if (renameCondition.shouldRename(cls)) {
 				String clsAlias = aliasProvider.forClass(cls);
