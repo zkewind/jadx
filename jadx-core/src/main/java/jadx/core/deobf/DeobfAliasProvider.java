@@ -40,7 +40,10 @@ public class DeobfAliasProvider implements IAliasProvider {
 	@Override
 	public String forClass(ClassNode cls) {
 		String prefix = makeClsPrefix(cls);
-		return String.format("%sC%04d%s", prefix, clsIndex++, prepareNamePart(cls.getName()));
+//		return String.format("%sC%04d%s", prefix, clsIndex++, prepareNamePart(cls.getName()));
+		// modified 用父类名作为类名后缀，例如：AbstractCAc0372 CAd0373AbstractCAc0372
+		String suffix = makeClsSuffix(cls);
+		return String.format("%sC%s%04d%s", prefix, prepareNamePart(cls.getName()), clsIndex++,suffix);
 	}
 
 	@Override
@@ -66,18 +69,36 @@ public class DeobfAliasProvider implements IAliasProvider {
 	 * extended superclasses or implemented interfaces.
 	 */
 	private String makeClsPrefix(ClassNode cls) {
+//		if (cls.isEnum()) {
+//			return "Enum";
+//		}
+//		StringBuilder result = new StringBuilder();
+//		if (cls.getAccessFlags().isInterface()) {
+//			result.append("Interface");
+//		} else if (cls.getAccessFlags().isAbstract()) {
+//			result.append("Abstract");
+//		}
+//		result.append(getBaseName(cls));
+//		return result.toString();
+		// modified 用父类名作为类名后缀，例如：CAc0372View
 		if (cls.isEnum()) {
-			return "Enum";
+			return "";
 		}
 		StringBuilder result = new StringBuilder();
 		if (cls.getAccessFlags().isInterface()) {
-			result.append("Interface");
+			result.append("I");
 		} else if (cls.getAccessFlags().isAbstract()) {
-			result.append("Abstract");
+			result.append("Base");
 		}
-		result.append(getBaseName(cls));
 		return result.toString();
 	}
+	private String makeClsSuffix(ClassNode cls) {
+		if (cls.isEnum()) {
+			return "Enum";
+		}
+		return getBaseName(cls);
+	}
+
 
 	/**
 	 * Process current class and all super classes to get meaningful parent name
