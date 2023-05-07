@@ -81,7 +81,9 @@ public class DeobfCondition implements IRenameCondition {
 		if (!cls.getClassInfo().getShortName().equals("R")) {
 			return false;
 		}
-		if (!cls.getMethods().isEmpty() || !cls.getFields().isEmpty()) {
+		// fixed: has a init<> method
+		// if (!cls.getMethods().isEmpty() || !cls.getFields().isEmpty()) {
+		if (cls.getMethods().size()>1 || !cls.getFields().isEmpty()) {
 			return false;
 		}
 		for (ClassNode inner : cls.getInnerClasses()) {
