@@ -99,6 +99,12 @@ public class ClassGen {
 			clsCode.add("package ").add(cls.getPackage()).add(';');
 			clsCode.newLine();
 		}
+		//mod add package "defpackage" if class package is not "defpackage"
+		if (!Consts.DEFAULT_PACKAGE_NAME.equals(cls.getPackage())) {
+			clsCode.add("import ").add(Consts.DEFAULT_PACKAGE_NAME).add(".*;");
+			clsCode.newLine();
+		}
+
 		int importsCount = imports.size();
 		if (importsCount != 0) {
 			List<ClassInfo> sortedImports = new ArrayList<>(imports);
