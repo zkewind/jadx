@@ -55,7 +55,7 @@ public class DeobfuscatorVisitor extends AbstractVisitor {
 			}
 			for (FieldNode fld : cls.getFields()) {
 				if (renameCondition.shouldRename(fld)) {
-					String fldAlias = aliasProvider.forField(fld);
+					String fldAlias = aliasProvider.forField(root,fld);
 					if (fldAlias != null) {
 						fld.rename(fldAlias);
 					}

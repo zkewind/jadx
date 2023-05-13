@@ -9,6 +9,7 @@ import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.PackageNode;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class DeobfAliasProvider implements IAliasProvider {
 
@@ -47,8 +48,12 @@ public class DeobfAliasProvider implements IAliasProvider {
 	}
 
 	@Override
-	public String forField(FieldNode fld) {
-		return String.format("f%d%s", fldIndex++, prepareNamePart(fld.getName()));
+	public String forField(RootNode root,FieldNode fld) {
+		// return String.format("f%d%s", fldIndex++, prepareNamePart(fld.getName()));
+		// mod 用类型名作为类成员名前缀，例如   String mString29a; File mFile30b; int mInt31i;
+		// String type = getClsAlias(field.getType());
+		String type = getArgTypeAliasShortName(root,fld.getType());
+		return String.format("%s%s_%d",prepareNamePart(fld.getName()),type, fldIndex++);
 	}
 
 	@Override
@@ -139,5 +144,33 @@ public class DeobfAliasProvider implements IAliasProvider {
 		int pgkEnd = name.lastIndexOf('.');
 		String clsName = name.substring(pgkEnd + 1);
 		return StringUtils.removeChar(clsName, '$');
+	}
+
+	@NotNull
+	private String getArgTypeAliasShortName(RootNode root,ArgType argType) {
+		String type = ArgType.tryToResolveClassAlias(root,argType).toString();
+		if(type.endsWith(">")){// like:java.util.HashMap<java.lang.String,java.lang.Integer>
+			type = argType.toString();
+
+			type = type.substring(0,type.length()-1);
+			type = type.replace("<",",");
+			String[] types = type.split(",");
+			type = "";
+			for (String s:types) {
+				type += getExtAndUpcaseFirstLetter(s);
+			}
+		}else{
+			type = getExtAndUpcaseFirstLetter(type);
+		}
+
+		type = type.replace("[]","s");
+
+		return type;
+	}
+	@NotNull
+	private String getExtAndUpcaseFirstLetter(String type) {
+		type = type.substring(type.lastIndexOf(".")+1);
+		type = type.substring(0,1).toUpperCase() + type.substring(1);
+		return type;
 	}
 }

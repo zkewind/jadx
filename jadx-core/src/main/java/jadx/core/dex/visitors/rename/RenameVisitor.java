@@ -58,7 +58,7 @@ public class RenameVisitor extends AbstractVisitor {
 		List<ClassNode> classes = root.getClasses(true);
 		for (ClassNode cls : classes) {
 			checkClassName(aliasProvider, cls, args);
-			checkFields(aliasProvider, cls, args);
+			checkFields(aliasProvider, cls, args,root);// mod
 			checkMethods(aliasProvider, cls, args);
 		}
 		if (!args.isFsCaseSensitive() && args.isRenameCaseSensitive()) {
@@ -154,7 +154,7 @@ public class RenameVisitor extends AbstractVisitor {
 		return cleanClsName;
 	}
 
-	private static void checkFields(IAliasProvider aliasProvider, ClassNode cls, JadxArgs args) {
+	private static void checkFields(IAliasProvider aliasProvider, ClassNode cls, JadxArgs args,RootNode root) {
 		Set<String> names = new HashSet<>();
 		for (FieldNode field : cls.getFields()) {
 			FieldInfo fieldInfo = field.getFieldInfo();
@@ -163,7 +163,7 @@ public class RenameVisitor extends AbstractVisitor {
 			boolean notValid = args.isRenameValid() && !NameMapper.isValidIdentifier(fieldName);
 			boolean notPrintable = args.isRenamePrintable() && !NameMapper.isAllCharsPrintable(fieldName);
 			if (notUnique || notValid || notPrintable) {
-				field.rename(aliasProvider.forField(field));
+				field.rename(aliasProvider.forField(root,field));
 				field.addAttr(new RenameReasonAttr(field, notValid, notPrintable));
 				if (notUnique) {
 					field.addAttr(new RenameReasonAttr(field).append("collision with other field name"));
@@ -227,7 +227,7 @@ public class RenameVisitor extends AbstractVisitor {
 			for (ClassNode cls : classes) {
 				for (FieldNode field : cls.getFields()) {
 					if (rootPkgs.contains(field.getAlias())) {
-						field.rename(aliasProvider.forField(field));
+						field.rename(aliasProvider.forField(root,field));
 						field.addAttr(new RenameReasonAttr("collision with root package name"));
 					}
 				}

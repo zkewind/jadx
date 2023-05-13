@@ -191,7 +191,7 @@ public class DeobfPresets {
 					}
 
 					@Override
-					public String forField(FieldNode fld) {
+					public String forField(RootNode root,FieldNode fld) {
 						return getForFld(fld.getFieldInfo());
 					}
 

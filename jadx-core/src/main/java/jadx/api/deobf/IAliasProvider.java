@@ -16,7 +16,7 @@ public interface IAliasProvider {
 
 	String forClass(ClassNode cls);
 
-	String forField(FieldNode fld);
+	String forField(RootNode root,FieldNode fld);
 
 	String forMethod(MethodNode mth);
 
