@@ -43,7 +43,7 @@ public class DeobfAliasProvider implements IAliasProvider {
 //		return String.format("%sC%04d%s", prefix, clsIndex++, prepareNamePart(cls.getName()));
 		// modified 用父类名作为类名后缀，例如：AbstractCAc0372 CAd0373AbstractCAc0372
 		String suffix = makeClsSuffix(cls);
-		return String.format("%sC%s%04d%s", prefix, prepareNamePart(cls.getName()), clsIndex++,suffix);
+		return String.format("%sC%s%s_%04d", prefix, prepareNamePart(cls.getName()),suffix, clsIndex++);
 	}
 
 	@Override
